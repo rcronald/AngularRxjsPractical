@@ -1,0 +1,65 @@
+
+<h1>Github Repositories Search</h1>
+
+<label class="mt-2">
+    <span>Repository name:</span>
+
+    <input type="text"
+           class="ml-2"
+           [ngModel]="''"
+           (ngModelChange)="onTextChange($event)"
+    />
+
+    <input type="button" (click)="exportRepos()" name="Export Repositories" />
+</label>
+
+<div class="row">
+    <div class="col-md-6" *ngIf="(searchResult | async) as repositories">
+        <h2>Repositories</h2>
+
+        <ng-container [ngSwitch]="repositories.items.length">
+            <ng-container *ngSwitchCase="0">
+                No results found
+            </ng-container>
+
+            <div class="d-flex justify-content-between row" *ngSwitchDefault>
+                <div class="col-md-6">
+                    <!-- REPOS LIST -->
+                    <div
+                        *ngFor="let repository of repositories.items"
+                        (mouseover)="onRepositoryMouseEvent(repository)"
+                        (mouseleave)="onRepositoryMouseEvent(undefined)"
+                    >
+                        {{ repository.name }}
+                    </div>
+                </div>
+
+                <div>
+                    <!-- OWNER -->
+                    <div *ngIf="(selectedRepository$ | async) as selectedRepository">
+                        <h4>{{ selectedRepository.owner.login }}</h4>
+
+                        <img [attr.src]="selectedRepository.owner.avatar_url"
+                             width="200"
+                             height="auto"
+                             alt="avatar"
+                        />
+                    </div>
+
+                    <!-- ORGANIZATIONS -->
+                    <div *ngIf="(organizations$ | async) as organizations" class="mt-2">
+                        <h6>Organizations</h6>
+
+                        <div *ngFor="let org of organizations" class="d-inline-flex mr-2">
+                            <img [attr.src]="org.avatar_url"
+                                 width="50"
+                                 height="50"
+                                 alt="org avatar"
+                            />
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </ng-container>
+    </div>
+</div>
